@@ -32,10 +32,14 @@ router.get("/", cors(), (req, res)=> {
 router.get("/:id", cors(), async (req, res) => {
     console.log(req.params.id)
     const id = req.params.id;
-    
-    const sumsub = await getAccessToken(req.params.id)
+    try {
+        const sumsub = await getAccessToken(req.params.id)
         console.log("________ SUMSUB _________\n", sumsub)
         res.send(sumsub.data)
+    } catch (error) {
+        console.log("__ERROR: ", error)
+    }
+    
 })
 
 const server = app.listen(3000, () => {
