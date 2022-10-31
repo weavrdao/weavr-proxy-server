@@ -4,8 +4,8 @@ const fs = require('fs');
 const FormData = require('form-data');
 
 // These parameters should be used for all requests
-const SUMSUB_APP_TOKEN = "prd:oBlc3x8ShbxcjREILqTTUING.LZBZEvYO6f6zb8ydhrCXc7bh08qgvxxH"; // Example: sbx:uY0CgwELmgUAEyl4hNWxLngb.0WSeQeiYny4WEqmAALEAiK2qTC96fBad - Please don't forget to change when switching to production
-const SUMSUB_SECRET_KEY = "qU6qmNvZQzHR8GRWODQhU3TYyjHLdf9J"; // Example: Hej2ch71kG2kTd1iIUDZFNsO5C1lh5Gq - Please don't forget to change when switching to production
+const SUMSUB_APP_TOKEN = process.env.SUMSUB_APP_TOKEN
+const SUMSUB_SECRET_KEY = process.env.SUMSUB_SECRET_KEY; // Example: Hej2ch71kG2kTd1iIUDZFNsO5C1lh5Gq - Please don't forget to change when switching to production
 const SUMSUB_BASE_URL = 'https://api.sumsub.com'; 
 
 var config = {};
