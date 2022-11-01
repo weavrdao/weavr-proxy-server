@@ -53,5 +53,5 @@ router.get("/", (req, res) => {
         "hello": "hi"
     });
 })
-app.use("/.netifly/functions/api", router)
+app.use("/.netlifly/functions/api", router)
 module.exports.handler = serverless(app)
