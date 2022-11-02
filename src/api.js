@@ -47,6 +47,7 @@ router.get("/prod/:id", cors(), async (req, res) => {
         res.send(sumsub.data)
     } catch (error) {
         console.log("__ERROR: ", error)
+        res.sendStatus(501)
     } 
 });
 router.get("/dev/:id", cors(), async (req, res) => {
@@ -55,6 +56,7 @@ router.get("/dev/:id", cors(), async (req, res) => {
         res.send(sumsub.data)
     } catch (error) {
         console.log("__ERROR: ", error)
+        res.sendStatus(501)
     } 
 });
 
