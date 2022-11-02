@@ -1,2 +1,6 @@
 [build]
-functions = "functions"
+    functions = "functions"
+
+
+[functions]
+     external_node_modules = ["axios"]

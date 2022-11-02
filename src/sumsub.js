@@ -1,11 +1,15 @@
-const axios = require('axios');
+
+require("dotenv").config()
+const { default: axios } = require('axios');
 const crypto = require('crypto');
-const fs = require('fs');
 const FormData = require('form-data');
 
+
+
+
 // These parameters should be used for all requests
-const SUMSUB_APP_TOKEN = process.env.SUMSUB_APP_TOKEN
-const SUMSUB_SECRET_KEY = process.env.SUMSUB_SECRET_KEY; // Example: Hej2ch71kG2kTd1iIUDZFNsO5C1lh5Gq - Please don't forget to change when switching to production
+const SUMSUB_APP_TOKEN = process.env.DEV_SUMSUB_TOKEN
+const SUMSUB_SECRET_KEY = process.env.DEV_SUMSUB_SECRET; 
 const SUMSUB_BASE_URL = 'https://api.sumsub.com'; 
 
 var config = {};
@@ -60,41 +64,17 @@ function createAccessToken (externalUserId, levelName = 'basic-kyc-level', ttlIn
   return config;
 }
 
-// This section contains requests to server using configuration functions
-// The description of the flow can be found here: https://developers.sumsub.com/api-flow/#api-integration-phases
-
-        // Such actions are presented below:
-        // 1) Creating an applicant
-        // 2) Adding a document to the applicant
-        // 3) Getting applicant status
-        // 4) Getting access tokens for SDKs
-
 async function getAccessToken(id) {
-
-    axios.interceptors.request.use(createSignature, function (error) {
-        return Promise.reject(error);
-      })
-
-  const externalUserId = "random-JSToken-" + Math.random().toString(36).substr(2, 9);
   const levelName = 'basic-kyc-level';
-  console.log("External UserID: ", externalUserId); 
 
-
-
-return  await axios(createAccessToken(id, levelName, 1200))
-  .then(function (response) {
-    // console.log("Response:\n", response.data);
-    return response;
-  })
-  .catch(function (error) {
-    console.log("Error:\n", error);
-  });
+  return  await axios(createAccessToken(id, levelName, 1200))
+    .then(function (response) {
+      // console.log("Response:\n", response.data);
+      return response;
+    })
+    .catch(function (error) {
+      console.log("Error:\n", error);
+    });
 }
-
-// async function main() {
-//     await getAccessToken("idsxsasa")
-// }
-
-// main()
 
 module.exports = getAccessToken
