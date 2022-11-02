@@ -30,20 +30,20 @@ router.options("/prod/*", cors(), function(req, res, next){
 });
 
 router.get("/dev", cors(), (req, res)=> {
-    console.log("yes")
+    console.log("PROD")
     res.status(200).json({
-        "id": "NULL"
+        "mode": "Production"
     })
 });
 router.get("/prod", cors(), (req, res)=> {
-    console.log("yes")
+    console.log("DEV")
     res.status(200).json({
-        "id": "NULL"
+        "mode": "Development"
     })
 });
 router.get("/prod/:id", cors(), async (req, res) => {
     try {
-        const sumsub = await getAccessToken("PROD", req.params.id)
+        const sumsub = await getAccessToken(req.params.id, "PROD")
         res.send(sumsub.data)
     } catch (error) {
         console.log("__ERROR: ", error)
