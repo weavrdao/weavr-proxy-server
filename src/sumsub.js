@@ -45,15 +45,15 @@ function createSignature(config) {
 
 
 // https://developers.sumsub.com/api-reference/#access-tokens-for-sdks
-function createAccessToken (externalUserId, levelName = 'basic-kyc-level', ttlInSecs = 600) {
+function createAccessToken (externalUserId, levelName = 'basic-kyc-level', ttlInSecs = 600, env = "DEV") {
   console.log("Creating an access token for initializng SDK...");
 
   var method = 'post';
   var url = `/resources/accessTokens?userId=${externalUserId}&ttlInSecs=${ttlInSecs}&levelName=${levelName}`;
-
+  const TOKEN = (env==="PROD") ? process.env.PROD_SUMSUB_TOKEN : process.env.DEV_SUMSUB_TOKEN
   var headers = {
       'Accept': 'application/json',
-      'X-App-Token': SUMSUB_APP_TOKEN
+      'X-App-Token': TOKEN
   };
 
   config.method = method;
@@ -64,10 +64,10 @@ function createAccessToken (externalUserId, levelName = 'basic-kyc-level', ttlIn
   return config;
 }
 
-async function getAccessToken(id) {
+async function getAccessToken(id, env = "DEV") {
   const levelName = 'basic-kyc-level';
 
-  return  await axios(createAccessToken(id, levelName, 1200))
+  return  await axios(createAccessToken(id, levelName, 1200), env)
     .then(function (response) {
       // console.log("Response:\n", response.data);
       return response;
