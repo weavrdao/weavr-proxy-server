@@ -67,7 +67,7 @@ function createAccessToken (externalUserId, levelName = 'basic-kyc-level', ttlIn
 async function getAccessToken(id, env = "DEV") {
   const levelName = 'basic-kyc-level';
 
-  return  await axios(createAccessToken(id, levelName, 1200), env)
+  return  await axios(createAccessToken(id, levelName, 1200, env))
     .then(function (response) {
       // console.log("Response:\n", response.data);
       return response;
