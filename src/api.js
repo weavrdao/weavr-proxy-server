@@ -30,15 +30,15 @@ router.options("/prod/*", cors(), function(req, res, next){
 });
 
 router.get("/dev", cors(), (req, res)=> {
-    console.log("PROD")
-    res.status(200).json({
-        "mode": "Production"
-    })
-});
-router.get("/prod", cors(), (req, res)=> {
     console.log("DEV")
     res.status(200).json({
         "mode": "Development"
+    })
+});
+router.get("/prod", cors(), (req, res)=> {
+    console.log("PROD")
+    res.status(200).json({
+        "mode": "Production"
     })
 });
 router.get("/prod/:id", cors(), async (req, res) => {
