@@ -9,7 +9,7 @@ const FormData = require('form-data');
 
 // These parameters should be used for all requests
 const SUMSUB_APP_TOKEN = process.env.DEV_SUMSUB_TOKEN
-const SUMSUB_SECRET_KEY = process.env.DEV_SUMSUB_SECRET; 
+let SUMSUB_SECRET_KEY = process.env.DEV_SUMSUB_SECRET; 
 const SUMSUB_BASE_URL = 'https://api.sumsub.com'; 
 
 var config = {};
@@ -67,6 +67,7 @@ function createAccessToken (externalUserId, levelName = 'basic-kyc-level', ttlIn
 async function getAccessToken(id, env = "DEV") {
   const levelName = 'basic-kyc-level';
   console.log(env)
+  SUMSUB_SECRET_KEY = (env==="PROD") ? process.env.PROD_SUMSUB_SECRET : process.env.DEV_SUMSUB_SECRET
   return  await axios(createAccessToken(id, levelName, 1200, env))
     .then(function (response) {
       // console.log("Response:\n", response.data);
