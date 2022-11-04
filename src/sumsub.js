@@ -50,7 +50,7 @@ function createAccessToken (externalUserId, levelName = 'basic-kyc-level', ttlIn
 
   var method = 'post';
   var url = `/resources/accessTokens?userId=${externalUserId}&ttlInSecs=${ttlInSecs}&levelName=${levelName}`;
-  const TOKEN = (env==="PROD") ? process.env.DEV_SUMSUB_TOKEN : process.env.DEV_SUMSUB_TOKEN
+  const TOKEN = process.env.DEV_SUMSUB_TOKEN
   var headers = {
       'Accept': 'application/json',
       'X-App-Token': TOKEN
@@ -67,7 +67,7 @@ function createAccessToken (externalUserId, levelName = 'basic-kyc-level', ttlIn
 async function getAccessToken(id, env = "DEV") {
   const levelName = 'basic-kyc-level';
   console.log(env)
-  SUMSUB_SECRET_KEY = (env==="PROD") ? process.env.DEV_SUMSUB_SECRET : process.env.DEV_SUMSUB_SECRET
+  SUMSUB_SECRET_KEY = process.env.DEV_SUMSUB_SECRET
   return  await axios(createAccessToken(id, levelName, 1200, env))
     .then(function (response) {
       // console.log("Response:\n", response.data);
