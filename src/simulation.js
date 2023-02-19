@@ -1834,4 +1834,6 @@ class TenderlySimulationClient {
     }
 }
 
-module.exports = TenderlySimulationClient
+const TenderlyInstance = new TenderlySimulationClient()
+
+export default TenderlyInstance

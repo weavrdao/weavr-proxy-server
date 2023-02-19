@@ -1,6 +1,6 @@
 const express = require("express");
 const getAccessToken = require("./sumsub");
-const TenderlySimulationClient = require("./simulation")
+const TenderlyInstance = require("./simulation")
 const axios = require("axios");
 const cors = require("cors");
 const serverless = require('serverless-http');
@@ -8,7 +8,6 @@ const serverless = require('serverless-http');
 
 const app = express();
 const router = express.Router();
-const simulationClient = new TenderlySimulationClient()
 
 const ORIGIN = {
     dev: 'http://localhost:8080',
@@ -33,9 +32,8 @@ router.post("/simulate-proposal", cors(), async (req, res) => {
     const queueTimestamp = req.params.queueTimestamp
     const completeTimestamp = req.params.completeTimestamp
     const networkId = req.params.networkId
-    const response = await simulationClient.simulateCurrentProposal(proposalId, assetId, networkId, queueTimestamp, completeTimestamp)
+    const response = await TenderlyInstance.simulateCurrentProposal(proposalId, assetId, networkId, queueTimestamp, completeTimestamp)
     res.status(200).json(response)
-
 })
 
 
