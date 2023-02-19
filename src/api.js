@@ -1,16 +1,18 @@
 const express = require("express");
 const getAccessToken = require("./sumsub");
-const TenderlyInstance = require("./simulation")
+const simulateCurrentProposal = require("./simulation")
 const axios = require("axios");
+const multer = require("multer");
+
 const cors = require("cors");
 const serverless = require('serverless-http');
 
 
 const app = express();
 const router = express.Router();
+const multerUpload = multer();
 
 const ORIGIN = {
-    dev: 'http://localhost:8080',
     test: 'https://test.weavr.org',
     prod: 'https://www.weavr.org'
 };
@@ -25,14 +27,21 @@ router.options("/*", cors(), function(req, res, next){
     res.sendStatus(200);
 });
 
-router.post("/simulate-proposal", cors(), async (req, res) => {
+router.post("/simulate-proposal", multerUpload.none(), async (req, res) => {
     console.log("Simulation")
-    const proposalId = req.params.proposalId
-    const assetId = req.params.assetId
-    const queueTimestamp = req.params.queueTimestamp
-    const completeTimestamp = req.params.completeTimestamp
-    const networkId = req.params.networkId
-    const response = await TenderlyInstance.simulateCurrentProposal(proposalId, assetId, networkId, queueTimestamp, completeTimestamp)
+    const data = req.body
+    const proposalId = data.proposalId
+    const assetId = data.assetId
+    const queueTimestamp = data.queueTimestamp
+    const completeTimestamp = data.completeTimestamp
+    const networkId = data.networkId
+    console.log("proposalId: ", proposalId)
+    console.log("assetId: ", assetId)
+    console.log("queueTimestamp: ", queueTimestamp)
+    console.log("completeTimestamp: ", completeTimestamp)
+    console.log("networkId: ", networkId)
+    const response = simulateCurrentProposal(proposalId, assetId, networkId, queueTimestamp, completeTimestamp)
+    console.log(response)
     res.status(200).json(response)
 })
 

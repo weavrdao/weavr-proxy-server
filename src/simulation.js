@@ -1,6 +1,3 @@
-import axios from 'axios';
-import {ethers} from "ethers";
-
 let weavr_contract = {
     "abi":[
         {
@@ -1778,62 +1775,67 @@ let weavr_contract = {
     ]
 }
 
+const { default: axios } = require('axios');
+
+const ethers =  require("ethers")
+
 let TENDERLY_USER = process.env.TENDERLY_USER
 let TENDERLY_PROJECT = process.env.TENDERLY_PROJECT
 let TENDERLY_ACCESS_KEY = process.env.TENDERLY_ACCESS_KEY
-class TenderlySimulationClient {
-    constructor() {
-        this.projectBase = `https://api.tenderly.co/api/v1/account/${TENDERLY_USER}/project/${TENDERLY_PROJECT}`
-        this.batchUrl = `${this.projectBase}/simulate-bundle`
-        this.singleUrl = `${this.projectBase}/simulations`
-        this.defaultSettings = {
-            save: true,
-            save_if_fails: true,
-            simulation_type: 'full',
-        }
-        this.headers = {
-            'X-Access-Key': TENDERLY_ACCESS_KEY,
-            "Content-Type": "application/json",
-            "Access-Control-Allow-Origin": "*"
-        }
-    }
-
-    async transactBatch(payload) {
-        return (await axios.post(
-            this.batchUrl,
-            {
-                simulations: payload,
-                headers: this.headers
-            }
-        )).data
-    }
-
-    async simulateCurrentProposal(proposalId, assetAddress, networkId, queueTimestamp, completeTimestamp) {
-        const iface = new ethers.utils.Interface(weavr_contract.abi)
-        const queueProposalData = iface.encodeFunctionData("queueProposal", [proposalId])
-        const completeProposalData = iface.encodeFunctionData("completeProposal", [proposalId, "0x00"])
-        const nullEthAddress = '0x0000000000000000000000000000000000000000'
-        const  queueSimulationData = {
-            timestamp: queueTimestamp,
-            from: nullEthAddress,
-            to: assetAddress,
-            input: queueProposalData,
-            network_id: networkId,
-            ...this.defaultSettings
-        }
-        const completeSimulationData = {
-            timestamp: completeTimestamp,
-            from: nullEthAddress,
-            to: assetAddress,
-            input: completeProposalData,
-            network_id: networkId,
-            ...this.defaultSettings
-        }
-        const payload = [queueSimulationData, completeSimulationData]
-        return await this.transactBatch(payload)
-    }
+const projectBase = `https://api.tenderly.co/api/v1/account/${TENDERLY_USER}/project/${TENDERLY_PROJECT}`
+const batchUrl = "/simulate-bundle"
+const singleUrl = `${projectBase}/simulations`
+const defaultSettings = {
+    save: true,
+    save_if_fails: true,
+    simulation_type: 'full',
+}
+const headers = {
+    'X-Access-Key': TENDERLY_ACCESS_KEY,
+    "Content-Type": "application/json",
+    "Access-Control-Allow-Origin": "*"
 }
 
-const TenderlyInstance = new TenderlySimulationClient()
+function transactBatch(payload) {
+    let config = {}
+    config.baseUrl = projectBase;
+    config.method = "post";
+    config.url = batchUrl;
+    config.headers = headers;
+    config.data = {simulations: payload}
+    axios(config).then(function (response) {
+            // console.log("Response:\n", response.data);
+            return response;
+        })
+        .catch(function (error) {
+            console.log("Error:\n", error);
+        });
+}
 
-export default TenderlyInstance
+function simulateCurrentProposal(proposalId, assetAddress, networkId, queueTimestamp, completeTimestamp) {
+    const iface = new ethers.utils.Interface(weavr_contract.abi)
+    const queueProposalData = iface.encodeFunctionData("queueProposal", [proposalId])
+    const completeProposalData = iface.encodeFunctionData("completeProposal", [proposalId, "0x00"])
+    const nullEthAddress = '0x0000000000000000000000000000000000000000'
+    const  queueSimulationData = {
+        timestamp: queueTimestamp,
+        from: nullEthAddress,
+        to: assetAddress,
+        input: queueProposalData,
+        network_id: networkId,
+        ...defaultSettings
+    }
+    const completeSimulationData = {
+        timestamp: completeTimestamp,
+        from: nullEthAddress,
+        to: assetAddress,
+        input: completeProposalData,
+        network_id: networkId,
+        ...defaultSettings
+    }
+    const payload = [queueSimulationData, completeSimulationData]
+    return transactBatch(payload);
+}
+
+
+module.exports = simulateCurrentProposal
