@@ -1784,7 +1784,7 @@ let TENDERLY_PROJECT = process.env.TENDERLY_PROJECT
 let TENDERLY_ACCESS_KEY = process.env.TENDERLY_ACCESS_KEY
 const projectBase = `https://api.tenderly.co/api/v1/account/${TENDERLY_USER}/project/${TENDERLY_PROJECT}`
 const batchUrl = "/simulate-bundle"
-const singleUrl = `${projectBase}/simulations`
+const singleUrl = "/simulations"
 const defaultSettings = {
     save: true,
     save_if_fails: true,
@@ -1793,23 +1793,18 @@ const defaultSettings = {
 const headers = {
     'X-Access-Key': TENDERLY_ACCESS_KEY,
     "Content-Type": "application/json",
-    "Access-Control-Allow-Origin": "*"
+    "Accept": "application/json"
+    // "Access-Control-Allow-Origin": "*"
 }
 
-function transactBatch(payload) {
+async function transactBatch(payload) {
     let config = {}
-    config.baseUrl = projectBase;
+    config.baseURL = projectBase;
     config.method = "post";
     config.url = batchUrl;
     config.headers = headers;
-    config.data = {simulations: payload}
-    axios(config).then(function (response) {
-            // console.log("Response:\n", response.data);
-            return response;
-        })
-        .catch(function (error) {
-            console.log("Error:\n", error);
-        });
+    config.data = {"simulations": payload}
+    return await axios.post(projectBase + batchUrl, config.data, {headers: headers, ignore: true})
 }
 
 function simulateCurrentProposal(proposalId, assetAddress, networkId, queueTimestamp, completeTimestamp) {
