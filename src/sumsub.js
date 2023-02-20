@@ -15,8 +15,6 @@ const SUMSUB_BASE_URL = 'https://api.sumsub.com';
 var config = {};
 config.baseURL= SUMSUB_BASE_URL;
 
-// const axiosWithSignature = axios.create();
-
 axios.interceptors.request.use(createSignature, function (error) {
   return Promise.reject(error);
 })
