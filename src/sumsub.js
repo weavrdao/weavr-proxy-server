@@ -22,24 +22,28 @@ axios.interceptors.request.use(createSignature, function (error) {
 // This function creates signature for the request as described here: https://developers.sumsub.com/api-reference/#app-tokens
 
 function createSignature(config) {
-  console.log('Creating a signature for the request...');
+  if(config.ignore === true){
+    return config
+  } else {
+    console.log('Creating a signature for the request...');
 
-  var ts = Math.floor(Date.now() / 1000);
-  const signature = crypto.createHmac('sha256',  SUMSUB_SECRET_KEY);
-  signature.update(ts + config.method.toUpperCase() + config.url);
+    var ts = Math.floor(Date.now() / 1000);
+    const signature = crypto.createHmac('sha256', SUMSUB_SECRET_KEY);
+    signature.update(ts + config.method.toUpperCase() + config.url);
 
-  if (config.data instanceof FormData) {
-    signature.update(config.data.getBuffer());
-  } else if (config.data) {
-    signature.update(config.data);
+    if (config.data instanceof FormData) {
+      signature.update(config.data.getBuffer());
+    } else if (config.data) {
+      signature.update(config.data);
+    }
+
+    config.headers['X-App-Access-Ts'] = ts;
+    config.headers['X-App-Access-Sig'] = signature.digest('hex');
+    // config.headers['Access-Control-Allow-Origin'] = '*'
+    // config.headers['Access-Control-Allow-Headers'] = "Content-Type, Authorization, X-Requested-With";
+    // config.headers['Access-Control-Allow-Methods'] = "DELETE, POST, GET, OPTIONS"
+    return config;
   }
-
-  config.headers['X-App-Access-Ts'] = ts;
-  config.headers['X-App-Access-Sig'] = signature.digest('hex');
-  // config.headers['Access-Control-Allow-Origin'] = '*'
-  // config.headers['Access-Control-Allow-Headers'] = "Content-Type, Authorization, X-Requested-With";
-  // config.headers['Access-Control-Allow-Methods'] = "DELETE, POST, GET, OPTIONS"
-  return config;
 }
 
 
