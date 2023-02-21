@@ -28,6 +28,7 @@ console.log("Server running...");
 //     res.sendStatus(200);
 // });
 
+
 router.post("/simulate-proposal", multerUpload.none(), async (req, res) => {
     try {
         console.log("Simulation")
@@ -44,7 +45,7 @@ router.post("/simulate-proposal", multerUpload.none(), async (req, res) => {
         console.log("networkId: ", networkId)
         const response = await simulateCurrentProposal(proposalId, assetId, networkId, queueTimestamp, completeTimestamp)
         console.log("completed simulation")
-        res.status(200).json(response.data)
+        res.status(200).headers({"access-control-allow-origin": "*",}).json(response.data)
     }
     catch (error) {
         console.log(error)
