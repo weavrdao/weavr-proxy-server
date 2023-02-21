@@ -22,14 +22,15 @@ const ORIGIN = {
 console.log("Server running...");
 
 
-// router.options("/*", cors(), function(req, res, next){
-//     res.header('Access-Control-Allow-Origin', `${ORIGIN.dev}, ${ORIGIN.test}, ${ORIGIN.prod}`);
-//     res.header('Access-Control-Allow-Headers', 'x-app-access-ts,x-app-access-sig ');
-//     res.sendStatus(200);
-// });
+router.options("/*", cors(), function(req, res, next){
+    // res.header('Access-Control-Allow-Origin', `${ORIGIN.dev}, ${ORIGIN.test}, ${ORIGIN.prod}`);
+    res.header('Access-Control-Allow-Origin', `*`);
+    res.header('Access-Control-Allow-Headers', 'x-app-access-ts,x-app-access-sig ');
+    res.sendStatus(200);
+});
 
 
-router.post("/simulate-proposal", multerUpload.none(), async (req, res) => {
+router.post("/simulate-proposal", multerUpload.none(), cors(), async (req, res) => {
     try {
         console.log("Simulation")
         const data = req.body
@@ -45,7 +46,7 @@ router.post("/simulate-proposal", multerUpload.none(), async (req, res) => {
         console.log("networkId: ", networkId)
         const response = await simulateCurrentProposal(proposalId, assetId, networkId, queueTimestamp, completeTimestamp)
         console.log("completed simulation")
-        res.status(200).headers({"access-control-allow-origin": "*",}).json(response.data)
+        res.send(response.data)
     }
     catch (error) {
         console.log(error)
