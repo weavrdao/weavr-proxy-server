@@ -1835,6 +1835,7 @@ function simulateCurrentProposal(proposalId, assetAddress, networkId, queueTimes
         ...defaultSettings
     }
     const payload = [queueSimulationData, completeSimulationData]
+    console.log(payload)
     return transactBatch(payload);
 }
 
