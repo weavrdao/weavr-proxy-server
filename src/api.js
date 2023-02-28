@@ -38,13 +38,13 @@ router.post("/simulate-proposal", multerUpload.none(), cors(), async (req, res) 
         const assetId = data.assetId
         const queueTimestamp = data.queueTimestamp
         const completeTimestamp = data.completeTimestamp
-        const networkId = data.networkId
+        const network = data.network
         console.log("proposalId: ", proposalId)
         console.log("assetId: ", assetId)
         console.log("queueTimestamp: ", queueTimestamp)
         console.log("completeTimestamp: ", completeTimestamp)
-        console.log("networkId: ", networkId)
-        const response = await simulateCurrentProposal(proposalId, assetId, networkId, queueTimestamp, completeTimestamp)
+        console.log("networkId: ", network)
+        const response = await simulateCurrentProposal(proposalId, assetId, network, queueTimestamp, completeTimestamp)
         console.log("completed simulation")
         res.send(response.data)
     }

@@ -1808,8 +1808,8 @@ async function transactBatch(payload) {
     return await axios.post(projectBase + batchUrl, config.data, {headers: headers, ignore: true})
 }
 
-async function simulateCurrentProposal(proposalId, assetAddress, networkId, queueTimestamp, completeTimestamp) {
-    const provider = new ethers.providers.InfuraProvider(networkId, INFURA_PROJECT_ID);
+async function simulateCurrentProposal(proposalId, assetAddress, network, queueTimestamp, completeTimestamp) {
+    const provider = new ethers.providers.InfuraProvider(network.name, INFURA_PROJECT_ID);
     const queueTimestampHex = "0x" + queueTimestamp.toString(16);
     const completeTimestampHex = "0x" + completeTimestamp.toString(16);
     const iface = new ethers.utils.Interface(weavr_contract.abi)
@@ -1825,7 +1825,7 @@ async function simulateCurrentProposal(proposalId, assetAddress, networkId, queu
         from: nullEthAddress,
         to: assetAddress,
         input: queueProposalData,
-        network_id: networkId,
+        network_id: network.id,
         ...defaultSettings
     }
     const completeSimulationData = {
@@ -1836,7 +1836,7 @@ async function simulateCurrentProposal(proposalId, assetAddress, networkId, queu
         from: nullEthAddress,
         to: assetAddress,
         input: completeProposalData,
-        network_id: networkId,
+        network_id: network.id,
         ...defaultSettings
     }
     const payload = [queueSimulationData, completeSimulationData]
