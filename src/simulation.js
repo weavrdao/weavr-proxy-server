@@ -1809,7 +1809,7 @@ async function transactBatch(payload) {
 }
 
 async function simulateCurrentProposal(proposalId, assetAddress, networkId, networkName, queueTimestamp, completeTimestamp) {
-    const provider = new ethers.providers.InfuraProvider(networkId, INFURA_PROJECT_ID);
+    const provider = new ethers.providers.InfuraProvider(networkName, INFURA_PROJECT_ID);
     const currentBlockNumber = await provider.getBlockNumber();
     const queueTimestampHex = "0x" + queueTimestamp.toString(16);
     const completeTimestampHex = "0x" + completeTimestamp.toString(16);
