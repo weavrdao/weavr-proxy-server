@@ -1808,20 +1808,19 @@ async function transactBatch(payload) {
     return await axios.post(projectBase + batchUrl, config.data, {headers: headers, ignore: true})
 }
 
-async function simulateCurrentProposal(proposalId, assetAddress, networkId, networkName, queueTimestamp, completeTimestamp) {
-    const provider = new ethers.providers.InfuraProvider(networkName, INFURA_PROJECT_ID);
-    const currentBlockNumber = await provider.getBlockNumber();
+async function simulateCurrentProposal(proposalId, assetAddress, networkId, blockNumber, queueTimestamp, completeTimestamp) {
     const queueTimestampHex = "0x" + queueTimestamp.toString(16);
     const completeTimestampHex = "0x" + completeTimestamp.toString(16);
     const iface = new ethers.utils.Interface(weavr_contract.abi)
     const queueProposalData = iface.encodeFunctionData("queueProposal", [proposalId])
     const completeProposalData = iface.encodeFunctionData("completeProposal", [proposalId, "0x00"])
     const nullEthAddress = '0x0000000000000000000000000000000000000000'
+    console.log("about to query tenderly")
     const  queueSimulationData = {
         block_header: {
             timestamp: queueTimestampHex
         },
-        block_number: currentBlockNumber-1,
+        block_number: parseInt(blockNumber),
         from: nullEthAddress,
         to: assetAddress,
         input: queueProposalData,
@@ -1832,11 +1831,11 @@ async function simulateCurrentProposal(proposalId, assetAddress, networkId, netw
         block_header: {
             timestamp: completeTimestampHex
         },
-        block_number: currentBlockNumber,
+        block_number: parseInt(blockNumber),
         from: nullEthAddress,
         to: assetAddress,
         input: completeProposalData,
-        network_id: network.id,
+        network_id: networkId,
         ...defaultSettings
     }
     const payload = [queueSimulationData, completeSimulationData]
