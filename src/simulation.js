@@ -1808,12 +1808,16 @@ async function transactBatch(payload) {
 }
 
 function simulateCurrentProposal(proposalId, assetAddress, networkId, queueTimestamp, completeTimestamp) {
+    const queueTimestampHex = "0x" + queueTimestamp.toString(16);
+    const completeTimestampHex = "0x" + completeTimestamp.toString(16);
     const iface = new ethers.utils.Interface(weavr_contract.abi)
     const queueProposalData = iface.encodeFunctionData("queueProposal", [proposalId])
     const completeProposalData = iface.encodeFunctionData("completeProposal", [proposalId, "0x00"])
     const nullEthAddress = '0x0000000000000000000000000000000000000000'
     const  queueSimulationData = {
-        timestamp: queueTimestamp,
+        block_header: {
+            timestamp: queueTimestampHex
+        },
         from: nullEthAddress,
         to: assetAddress,
         input: queueProposalData,
@@ -1821,7 +1825,9 @@ function simulateCurrentProposal(proposalId, assetAddress, networkId, queueTimes
         ...defaultSettings
     }
     const completeSimulationData = {
-        timestamp: completeTimestamp,
+        block_header: {
+            timestamp: completeTimestampHex
+        },
         from: nullEthAddress,
         to: assetAddress,
         input: completeProposalData,
