@@ -1782,6 +1782,7 @@ const ethers =  require("ethers")
 let TENDERLY_USER = process.env.TENDERLY_USER
 let TENDERLY_PROJECT = process.env.TENDERLY_PROJECT
 let TENDERLY_ACCESS_KEY = process.env.TENDERLY_ACCESS_KEY
+let INFURA_PROJECT_ID = process.env.INFURA_PROJECT_ID
 const projectBase = `https://api.tenderly.co/api/v1/account/${TENDERLY_USER}/project/${TENDERLY_PROJECT}`
 const batchUrl = "/simulate-bundle"
 const singleUrl = "/simulations"
@@ -1807,17 +1808,20 @@ async function transactBatch(payload) {
     return await axios.post(projectBase + batchUrl, config.data, {headers: headers, ignore: true})
 }
 
-function simulateCurrentProposal(proposalId, assetAddress, networkId, queueTimestamp, completeTimestamp) {
+async function simulateCurrentProposal(proposalId, assetAddress, networkId, queueTimestamp, completeTimestamp) {
+    const provider = new ethers.providers.InfuraProvider(networkId, ProviderApiKey);
     const queueTimestampHex = "0x" + queueTimestamp.toString(16);
     const completeTimestampHex = "0x" + completeTimestamp.toString(16);
     const iface = new ethers.utils.Interface(weavr_contract.abi)
     const queueProposalData = iface.encodeFunctionData("queueProposal", [proposalId])
     const completeProposalData = iface.encodeFunctionData("completeProposal", [proposalId, "0x00"])
     const nullEthAddress = '0x0000000000000000000000000000000000000000'
+    const currentBlockNumber = await provider.getBlockNumber();
     const  queueSimulationData = {
         block_header: {
             timestamp: queueTimestampHex
         },
+        block_number: currentBlockNumber-1,
         from: nullEthAddress,
         to: assetAddress,
         input: queueProposalData,
@@ -1828,6 +1832,7 @@ function simulateCurrentProposal(proposalId, assetAddress, networkId, queueTimes
         block_header: {
             timestamp: completeTimestampHex
         },
+        block_number: currentBlockNumber,
         from: nullEthAddress,
         to: assetAddress,
         input: completeProposalData,
